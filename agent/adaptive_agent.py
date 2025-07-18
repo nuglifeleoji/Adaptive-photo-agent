@@ -18,29 +18,51 @@ class AdaptivePhotoAgent:
     def generate_advice(self, frame, return_offset_ok=False):
         detection = self.detector.detect(frame)
         current_bbox = detection.get('bbox', None)
+        advice_list = []
 
-        if current_bbox is None:
+        if not detection.get('face_detected', False):
+            advice_list.append("No face detected, please face the camera")
             if return_offset_ok:
-                return "Adjust position to be visible", False
+                return ", ".join(advice_list), False
             else:
-                return "Adjust position to be visible"
+                return ", ".join(advice_list)
 
+        # 位置建议
         advice = self.advisor.compute_offset_advice(self.user_reference_bbox, current_bbox)
-        offset_ok = advice == "Good position, hold"
+        if advice != "Good position, hold":
+            advice_list.append(advice)
 
-        if offset_ok:
-            if detection.get('smile', False):
-                if return_offset_ok:
-                    return "Good position, hold", True
-                else:
-                    return "Good position, hold"
-            else:
-                if return_offset_ok:
-                    return "Hold position and smile", True
-                else:
-                    return "Hold position and smile"
+        # 微笑建议
+        if not detection.get('smile', False):
+            advice_list.append("Please smile")
+
+        # 头部朝向建议
+        head_pose = detection.get('head_pose')
+        if head_pose:
+            yaw = head_pose.get('yaw', 0)
+            pitch = head_pose.get('pitch', 0)
+            # 简单阈值判断
+            if yaw > 0.08:
+                advice_list.append("Turn your head left")
+            elif yaw < -0.08:
+                advice_list.append("Turn your head right")
+            if pitch > 0.08:
+                advice_list.append("Lower your head")
+            elif pitch < -0.08:
+                advice_list.append("Raise your head")
+
+        # 身体朝向建议
+        body_pose = detection.get('body_pose')
+        if body_pose == 'left':
+            advice_list.append("Turn your body right")
+        elif body_pose == 'right':
+            advice_list.append("Turn your body left")
+
+        if not advice_list:
+            advice_list.append("Good position, hold")
+
+        offset_ok = (advice == "Good position, hold") and detection.get('smile', False)
+        if return_offset_ok:
+            return ", ".join(advice_list), offset_ok
         else:
-            if return_offset_ok:
-                return advice, False
-            else:
-                return advice
+            return ", ".join(advice_list)
