@@ -1,0 +1,25 @@
+version: "3.1"
+nlu:
+  - intent: select_photo_type
+    examples: |
+      - I want a full-body photo
+      - Take a full-body picture
+      - Please capture my whole body
+      - Can you take a full-body shot?
+      - Full-body photo please
+
+  - intent: take_photo
+    examples: |
+      - Take a photo
+      - Capture the picture
+      - Please take a picture now
+      - I’m ready for the photo
+      - Snap a photo
+
+  - intent: select_filter
+    examples: |
+      - I want a natural filter
+      - Apply the bright filter
+      - Please use the vintage filter
+      - I prefer a black and white filter
+      - Use HDR for the photo

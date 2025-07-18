@@ -1,0 +1,3 @@
+[console_scripts]
+graphrag=graphrag.cli.main:app
+
