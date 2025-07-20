@@ -8,15 +8,21 @@ def list_microphones():
         print(f"  {idx}: {name}")
     return mic_list
 
-def listen_for_command(timeout=5, phrase_time_limit=5, mic_index=None, language="zh-CN"):
+def listen_for_command(timeout=3, phrase_time_limit=5, mic_index=None, language="zh-CN"):
     recognizer = sr.Recognizer()
     mic_list = list_microphones()
     if mic_index is None and mic_list:
         mic_index = 0  # 默认用第一个麦克风
+    
+    # 优化识别参数
+    recognizer.energy_threshold = 300  # 降低能量阈值，更容易触发
+    recognizer.dynamic_energy_threshold = True  # 动态能量阈值
+    recognizer.pause_threshold = 0.5  # 减少暂停阈值，更快识别
+    
     try:
         with sr.Microphone(device_index=mic_index) as source:
             print("[INFO] Listening for command... Speak now.")
-            recognizer.adjust_for_ambient_noise(source, duration=1)
+            recognizer.adjust_for_ambient_noise(source, duration=1)  # 环境噪音调整时间
             audio = recognizer.listen(source, timeout=timeout, phrase_time_limit=phrase_time_limit)
             print("[INFO] Processing speech...")
             command = recognizer.recognize_google(audio, language=language)
