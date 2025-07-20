@@ -6,10 +6,11 @@ class SmartPromptGenerator:
     def __init__(self, api_key: str):
         self.dialogue_manager = DialogueManager(api_key)
         self.last_prompt_time = 0
-        self.prompt_interval = 15  # 增加间隔到15秒，减少过于频繁的提示
+        self.prompt_interval = 20  # 20秒
         self.last_detection_state = {}
         self.prompt_history = []
-        self.consecutive_similar_prompts = 0  # 连续相似提示计数
+        self.suggestion_count = 0
+        self.max_suggestions = 2
         
     def generate_smart_prompt(self, detection_result: Dict, frame_info: Dict = None) -> Optional[str]:
         """
@@ -25,6 +26,8 @@ class SmartPromptGenerator:
         current_time = time.time()
         
         # 检查是否需要生成新提示
+        if self.suggestion_count >= self.max_suggestions:
+            return None
         if current_time - self.last_prompt_time < self.prompt_interval:
             return None
             
@@ -52,6 +55,7 @@ class SmartPromptGenerator:
                 
             self.last_prompt_time = current_time
             self.last_detection_state = detection_result.copy()
+            self.suggestion_count += 1
             
             return ai_response
             
@@ -222,6 +226,9 @@ class SmartPromptGenerator:
         self.prompt_history = []
         self.last_detection_state = {}
         self.last_prompt_time = 0
+
+    def reset_suggestions(self):
+        self.suggestion_count = 0
 
 # 使用示例
 if __name__ == "__main__":
