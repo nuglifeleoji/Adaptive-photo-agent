@@ -85,7 +85,7 @@ def main():
             # 生成智能提示
             prompt = smart_prompt_generator.generate_smart_prompt(detection_result)
             if prompt:
-                print(f"智能提示: {prompt}")
+                speaker.speak(prompt)  # 直接播报AI原话
                 
                 # 简化提示内容，只取关键部分
                 simplified_prompt = smart_prompt_generator.simplify_prompt(prompt)
