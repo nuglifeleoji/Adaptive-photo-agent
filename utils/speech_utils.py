@@ -53,5 +53,8 @@ class SpeechHelper:
 def speak_non_blocking(text, speaker):
     speaker.speak(text)
 
+def speak_prompt_non_blocking(text, speaker):
+    speaker.speak(text)
+
 def countdown_and_capture_non_blocking(speaker, capturer, frame):
     threading.Thread(target=speaker.countdown_and_capture, args=(capturer, frame), daemon=True).start()
