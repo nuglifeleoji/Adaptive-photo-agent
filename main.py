@@ -96,15 +96,22 @@ def main():
                 # 检查是否包含拍照建议
                 if any(keyword in prompt for keyword in ["现在可以拍照", "准备拍照", "可以拍照了", "拍照时机"]):
                     # 延迟3秒后自动拍照
-                    time.sleep(3)
+                    time.sleep(1) # Changed from 3 to 1 for faster response
                     if not photo_taken_ref[0]:  # 使用列表引用
-                        path = capturer.capture_and_save(frame)
-                        speaker.speak(f"照片已自动保存到 {path}")
-                        print(f"[INFO] Auto photo saved at {path}")
+                        do_countdown_and_capture(frame)
                         photo_taken_ref[0] = True
                 
         except Exception as e:
             print(f"[ERROR] 智能提示处理错误: {e}")
+
+    def do_countdown_and_capture(frame):
+        for count in ["3", "2", "1", "茄子"]:
+            speaker.speak(count)
+            time.sleep(0.7)
+        path = capturer.capture_and_save(frame)
+        speaker.speak(f"照片已保存到 {path}")
+        print(f"[INFO] Photo saved at {path}")
+        return path
 
     while True:
         ret, frame = cap.read()
@@ -211,6 +218,14 @@ def main():
                         elif "lomo" in command:
                             style_choice = "lomo"
                         speaker.speak(f"{style_choice} 滤镜已切换")
+                    
+                    # 再来一张指令
+                    elif "再来一张" in command or "one more" in command:
+                        smart_prompt_generator.reset_suggestions()
+                        do_countdown_and_capture(frame)
+                        photo_taken = True
+                        time.sleep(2)
+                        break
                     
                     processing_command = False
             
