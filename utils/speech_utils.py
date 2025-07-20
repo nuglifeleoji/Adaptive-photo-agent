@@ -80,8 +80,13 @@ class SpeechHelper:
 def speak_non_blocking(text, speaker):
     threading.Thread(target=speaker.speak, args=(text,), daemon=True).start()
 
-def speak_prompt_non_blocking(prompt_key, speaker):
-    threading.Thread(target=speaker.speak_prompt, args=(prompt_key,), daemon=True).start()
+def speak_prompt_non_blocking(prompt_key, speaker, custom_text=None):
+    if custom_text:
+        # 播报自定义文本
+        threading.Thread(target=speaker.speak, args=(custom_text,), daemon=True).start()
+    else:
+        # 播报预设提示
+        threading.Thread(target=speaker.speak_prompt, args=(prompt_key,), daemon=True).start()
 
 def countdown_and_capture_non_blocking(speaker, capturer, frame):
     threading.Thread(target=speaker.countdown_and_capture, args=(capturer, frame), daemon=True).start()
