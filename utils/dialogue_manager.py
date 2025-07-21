@@ -8,14 +8,10 @@ class DialogueManager:
         self.api_key = api_key
         self.base_url = base_url
         self.conversation_history: List[Dict] = []
-        self.system_prompt = """你是一个智能拍照助手，能够帮助用户拍出更好的照片。你的职责包括：
-
-1. 理解用户的拍照需求（如角度、滤镜、风格等）
-2. 给出具体的拍照建议（如"请向左转一点"、"保持微笑"等）
-3. 根据用户反馈调整拍照策略
-4. 在合适的时机建议拍照
-
-请用简洁、友好的语气回复，并明确指出具体的拍照指令。"""
+        self.system_prompt = (
+            "你是一个语音助手，每次回复请只用两句话，简短直接。"
+            "不要解释，不要重复用户的话，只说最关键的建议。"
+        )
 
     def add_message(self, role: str, content: str):
         """添加消息到对话历史"""
@@ -23,18 +19,13 @@ class DialogueManager:
             "role": role,
             "content": content
         })
-        
-        # 保持对话历史在合理长度内（避免token过多）
-        if len(self.conversation_history) > 10:
-            # 保留system prompt和最近的对话
-            self.conversation_history = [
-                {"role": "system", "content": self.system_prompt}
-            ] + self.conversation_history[-8:]
+        # 只保留最近2条（用户+AI）
+        if len(self.conversation_history) > 4:
+            self.conversation_history = self.conversation_history[-4:]
 
     def chat_with_ai(self, user_message: str) -> Tuple[str, Dict]:
         """
         与AI对话，返回AI回复和解析的指令
-        
         Returns:
             Tuple[str, Dict]: (AI回复文本, 解析的指令字典)
         """

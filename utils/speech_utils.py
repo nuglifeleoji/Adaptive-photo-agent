@@ -4,7 +4,7 @@ import time
 import queue
 
 class SpeechHelper:
-    def __init__(self, voice_name=None, rate=150):
+    def __init__(self, voice_name=None, rate=220):
         self.engine = pyttsx3.init()
         self.engine.setProperty('rate', rate)
         voices = self.engine.getProperty('voices')
@@ -52,9 +52,7 @@ class SpeechHelper:
 
 def speak_non_blocking(text, speaker):
     speaker.speak(text)
-
-def speak_prompt_non_blocking(text, speaker):
-    speaker.speak(text)
-
+def speak_prompt_non_blocking(prompt_key, speaker):
+    speaker.speak(prompt_key)
 def countdown_and_capture_non_blocking(speaker, capturer, frame):
     threading.Thread(target=speaker.countdown_and_capture, args=(capturer, frame), daemon=True).start()
