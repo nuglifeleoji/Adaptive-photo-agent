@@ -235,8 +235,10 @@ def main():
         if ready_to_capture and not photo_taken and not conversation_mode:
             stable_count += 1
             if stable_count >= 3:
-                speak_prompt_non_blocking("ready_photo", speaker)
-                time.sleep(0.5)
+                #speak_prompt_non_blocking("ready_photo", speaker)
+                #time.sleep(0.5)
+                speaker.speak("准备拍照")
+                time.sleep(3)
                 path = capturer.capture_and_save(frame)
                 speaker.speak(f"Photo captured and saved at {path}.")
                 print(f"[INFO] Photo saved at {path}")
