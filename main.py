@@ -50,7 +50,7 @@ def main():
             print(f"用户: {command}")
             
             # 调用AI对话
-            ai_reply, _ = dialogue_manager.chat_with_ai(command)
+            ai_reply, parsed_commands = dialogue_manager.chat_with_ai(command)
             if not ai_reply or len(ai_reply.strip()) == 0:
                 ai_reply = "对不起，我没有听清，请再说一遍。"
             print(f"AI：{ai_reply}")
