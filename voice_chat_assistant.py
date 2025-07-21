@@ -11,8 +11,7 @@ def main():
     while True:
         user_text = listen_for_command(timeout=5, phrase_time_limit=8)
         if not user_text:
-            print("没有识别到语音，请重试。")
-            continue
+            print("没有识别到语音，请重试。"); continue
         print(f"你说：{user_text}")
         if "关机" in user_text or "退出" in user_text or "quit" in user_text:
             print("AI助手已关机。再见！")
@@ -23,10 +22,8 @@ def main():
         if not ai_reply or len(ai_reply.strip()) == 0:
             ai_reply = "对不起，我没有听清，请再说一遍。"
         print(f"AI：{ai_reply}")
-
-        # 只播报第一句话，避免超长
-        first_sentence = ai_reply.split('。')[0] + "。" if "。" in ai_reply else ai_reply
-        speaker.speak(first_sentence)
+        speaker.engine.say(ai_reply)
+        speaker.engine.runAndWait()
 
     # 等待队列清空
     import time
