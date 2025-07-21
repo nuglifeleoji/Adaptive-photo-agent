@@ -50,11 +50,11 @@ def main():
             print(f"用户: {command}")
             
             # 调用AI对话
-            ai_response, parsed_commands = dialogue_manager.chat_with_ai(command)
-            print(f"AI: {ai_response}")
-            
-            # 语音播报AI回复
-            speaker.speak(ai_response)
+            ai_reply, _ = dialogue_manager.chat_with_ai(command)
+            if not ai_reply or len(ai_reply.strip()) == 0:
+                ai_reply = "对不起，我没有听清，请再说一遍。"
+            print(f"AI：{ai_reply}")
+            speaker.speak(ai_reply)
             
             # 处理解析的指令
             if parsed_commands.get("action") == "take_photo":
