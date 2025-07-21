@@ -71,6 +71,22 @@ export default function PhotoAgentDemo() {
     recognition.start();
   };
 
+  const handleUpload = (files) => {
+    const formData = new FormData();
+    for (let file of files) {
+      formData.append('photos', file);
+    }
+    fetch('http://localhost:5000/upload_user_style', {
+      method: 'POST',
+      body: formData
+    })
+      .then(res => res.json())
+      .then(data => {
+        alert('风格分析完成！');
+        // 可显示风格标签
+      });
+  };
+
   return (
     <div style={{ maxWidth: 480, margin: "0 auto", textAlign: "center" }}>
       <h2>智能拍照助手演示</h2>

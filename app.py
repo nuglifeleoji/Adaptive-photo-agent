@@ -4,6 +4,7 @@ from utils.dialogue_manager import DialogueManager
 import base64
 import os
 import datetime
+from utils.user_style import analyze_user_style
 
 app = Flask(__name__)
 CORS(app)  # 允许跨域
