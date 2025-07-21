@@ -122,6 +122,11 @@ def main():
         print(f"[INFO] Photo saved at {path}")
         return path
 
+    photo_count = 0
+    max_photos = 3
+    photo_taken = False
+    is_counting_down = False
+
     while True:
         ret, frame = cap.read()
         if not ret:
@@ -151,6 +156,32 @@ def main():
             cv2.putText(frame, "处理中...", (30, 90), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 255), 2)
         
         cv2.imshow("AI Adaptive Photo Agent", frame)
+
+        # 只在未倒计时且未达到最大拍照数时处理
+        if ready_to_capture and not photo_taken and not is_counting_down and photo_count < max_photos:
+            is_counting_down = True
+            def countdown_and_shoot():
+                for count in ["3", "2", "1", "茄子"]:
+                    speaker.speak(count)
+                    time.sleep(0.7)
+                path = capturer.capture_and_save(frame)
+                speaker.speak(f"照片已保存到 {path}")
+                print(f"[INFO] Photo saved at {path}")
+                nonlocal photo_taken, is_counting_down, photo_count
+                photo_taken = True
+                is_counting_down = False
+                photo_count += 1
+            threading.Thread(target=countdown_and_shoot, daemon=True).start()
+            continue
+
+        # 拍完一张后，只有当用户调整姿势（ready_to_capture变为False再变为True）时，photo_taken才重置
+        if not ready_to_capture:
+            photo_taken = False
+
+        # 拍够3张自动退出
+        if photo_count >= max_photos:
+            print("已拍摄3张照片，程序自动退出。")
+            break
 
         # 智能主动提示（在非对话模式下）
         if auto_prompt_mode and not conversation_mode and not processing_command:
@@ -240,44 +271,16 @@ def main():
             
             last_command_time = time.time()
 
-        # 自动拍照逻辑（当满足条件时）
-        if ready_to_capture and not photo_taken and not conversation_mode:
-            stable_count += 1
-            if stable_count >= 3:
-                #speak_prompt_non_blocking("ready_photo", speaker)
-                #time.sleep(0.5)
-                #speaker.speak("准备拍照")
-                #time.sleep(3)
-                is_counting_down = True
-                # 清空语音队列，确保只播报倒计时
-                while not speaker.speak_queue.empty():
-                    try:
-                        speaker.speak_queue.get_nowait()
-                    except Exception:
-                        break
-                speaker.speak("准备拍照")
-                speaker.speak_sequence(["3", "2", "1", "茄子"])
-                time.sleep(5)  # 等待语音播报完成（可根据实际语速调整）
-                path = capturer.capture_and_save(frame)
-                #speaker.speak(f"Photo captured and saved at {path}.")
-                speaker.speak(f"照片已保存到 {path}.")
-                print(f"[INFO] Photo saved at {path}")
-                photo_taken = True
-                is_counting_down = False
-                time.sleep(2)
-                break
-        else:
-            stable_count = 0
-            # 语音提示用户调整（仅在非对话模式下且未倒计时）
-            if not conversation_mode and not is_counting_down:
-                if "Move back" in advice:
-                    speak_prompt_non_blocking("move_back", speaker)
-                elif "Move closer" in advice:
-                    speak_prompt_non_blocking("move_closer", speaker)
-                elif "Move left" in advice:
-                    speak_prompt_non_blocking("move_left", speaker)
-                elif "Move right" in advice:
-                    speak_prompt_non_blocking("move_right", speaker)
+        # 语音提示用户调整（仅在非对话模式下且未倒计时）
+        if not conversation_mode and not is_counting_down:
+            if "Move back" in advice:
+                speak_prompt_non_blocking("move_back", speaker)
+            elif "Move closer" in advice:
+                speak_prompt_non_blocking("move_closer", speaker)
+            elif "Move left" in advice:
+                speak_prompt_non_blocking("move_left", speaker)
+            elif "Move right" in advice:
+                speak_prompt_non_blocking("move_right", speaker)
 
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
