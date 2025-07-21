@@ -116,7 +116,7 @@ def main():
     def do_countdown_and_capture(frame):
         for count in ["3", "2", "1", "茄子"]:
             speaker.speak(count)
-            time.sleep(0.7)
+            time.sleep(5)
         path = capturer.capture_and_save(frame)
         speaker.speak(f"照片已保存到 {path}")
         print(f"[INFO] Photo saved at {path}")
@@ -163,7 +163,7 @@ def main():
             def countdown_and_shoot():
                 for count in ["3", "2", "1", "茄子"]:
                     speaker.speak(count)
-                    time.sleep(0.7)
+                    time.sleep(5)
                 path = capturer.capture_and_save(frame)
                 speaker.speak(f"照片已保存到 {path}")
                 print(f"[INFO] Photo saved at {path}")
