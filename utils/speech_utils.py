@@ -50,6 +50,13 @@ class SpeechHelper:
     def close(self):
         self.speak_queue.put(None)
 
+    def speak_sequence(self, texts, interval=0):
+        """依次播报一组文本，每条之间可加间隔（秒）"""
+        for text in texts:
+            self.speak(text)
+            if interval > 0:
+                time.sleep(interval)
+
 def speak_non_blocking(text, speaker):
     speaker.speak(text)
 def speak_prompt_non_blocking(prompt_key, speaker):

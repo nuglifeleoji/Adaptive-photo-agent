@@ -28,6 +28,7 @@ def main():
     cap = cv2.VideoCapture(0)
     stable_count = 0
     photo_taken = False
+    is_counting_down = False  # 新增倒计时标志
     
     # 对话相关参数
     last_command_time = time.time()
@@ -36,6 +37,8 @@ def main():
     processing_command = False  # 是否正在处理指令
     auto_prompt_mode = True  # 是否启用智能主动提示
     
+    last_smart_prompt = None  # 记录上一次播报的智能提示
+
     print("智能拍照助手已启动！")
     print("说'开始对话'进入智能对话模式")
     print("说'关闭提示'关闭主动提示")
@@ -81,11 +84,17 @@ def main():
 
     def process_smart_prompt(detection_result, photo_taken_ref):
         """在后台线程中处理智能提示"""
+        nonlocal last_smart_prompt
         try:
             # 生成智能提示
             prompt = smart_prompt_generator.generate_smart_prompt(detection_result)
-            if prompt:
-                speaker.speak(prompt)  # 直接播报AI原话
+            #if prompt:
+            #    speaker.speak(prompt)  # 直接播报AI原话
+            #
+            if prompt and prompt != last_smart_prompt:
+                speaker.speak(prompt)  # 只在内容变化时播报AI原话
+                last_smart_prompt = prompt
+                time.sleep(1)  # 播报后等待1秒
                 
                 # 简化提示内容，只取关键部分
                 simplified_prompt = smart_prompt_generator.simplify_prompt(prompt)
@@ -237,18 +246,30 @@ def main():
             if stable_count >= 3:
                 #speak_prompt_non_blocking("ready_photo", speaker)
                 #time.sleep(0.5)
+                #speaker.speak("准备拍照")
+                #time.sleep(3)
+                is_counting_down = True
+                # 清空语音队列，确保只播报倒计时
+                while not speaker.speak_queue.empty():
+                    try:
+                        speaker.speak_queue.get_nowait()
+                    except Exception:
+                        break
                 speaker.speak("准备拍照")
-                time.sleep(3)
+                speaker.speak_sequence(["3", "2", "1", "茄子"])
+                time.sleep(5)  # 等待语音播报完成（可根据实际语速调整）
                 path = capturer.capture_and_save(frame)
-                speaker.speak(f"Photo captured and saved at {path}.")
+                #speaker.speak(f"Photo captured and saved at {path}.")
+                speaker.speak(f"照片已保存到 {path}.")
                 print(f"[INFO] Photo saved at {path}")
                 photo_taken = True
+                is_counting_down = False
                 time.sleep(2)
                 break
         else:
             stable_count = 0
-            # 语音提示用户调整（仅在非对话模式下）
-            if not conversation_mode:
+            # 语音提示用户调整（仅在非对话模式下且未倒计时）
+            if not conversation_mode and not is_counting_down:
                 if "Move back" in advice:
                     speak_prompt_non_blocking("move_back", speaker)
                 elif "Move closer" in advice:
