@@ -180,25 +180,6 @@ Instead of replacing photographers, this project enhances the user's **self-expr
 - **Mobile App**: Native smartphone application with camera integration
 - **Social Features**: Share photos directly to social media with optimized settings
 
-## 🐛 Troubleshooting
-
-### Common Issues
-- **Camera not detected**: Ensure webcam is connected and not used by other applications
-- **Voice commands not working**: Check microphone permissions and audio input levels
-- **AI responses slow**: Verify internet connection and API key configuration
-- **Filter effects not applying**: Update OpenCV and check video codec support
-
-### Configuration
-- **API Key**: Set your API key in the `.env` file (never commit this file!)
-- **Settings**: Adjust camera, voice, and other settings in `config.py`
-- **Voice Recognition**: Timeout and language settings configurable in `config.py`
-- **Filters**: Customize filter styles and parameters in `filters/beauty_filter.py`
-
-### Security Notes
-- ✅ API keys are stored in environment variables (`.env` file)
-- ✅ Sensitive files are excluded from git via `.gitignore`
-- ✅ Template file provided for easy setup (`env_template.txt`)
-
 ## 📢 Contributing
 
 Your ideas, issues, and pull requests are very welcome! Here's how you can contribute:
