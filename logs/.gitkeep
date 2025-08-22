@@ -1,0 +1,2 @@
+# This file ensures the logs directory is preserved in git
+# Application logs will be stored here

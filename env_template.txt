@@ -1,0 +1,12 @@
+# Environment Variables Template
+# Rename this file to .env and fill in your actual values
+
+# AI API Configuration
+API_KEY=your-api-key-here
+API_BASE_URL=https://api.siliconflow.cn
+
+# Optional: Override default settings
+# CAMERA_INDEX=0
+# TARGET_SIZE_DEFAULT=half-body
+# MAX_PHOTOS_PER_SESSION=3
+# VOICE_LANGUAGE=en-US

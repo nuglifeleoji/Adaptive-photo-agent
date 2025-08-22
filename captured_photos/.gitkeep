@@ -1,0 +1,2 @@
+# This file ensures the captured_photos directory is preserved in git
+# Photos will be saved here during application usage

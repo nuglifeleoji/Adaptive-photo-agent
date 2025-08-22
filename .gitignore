@@ -1,12 +1,19 @@
-# Python virtual environments
-avenv/
-myenv/
-venv/
-.env/
+# Environment variables and sensitive data
+.env
+*.env
+.env.local
+.env.*.local
+
+# API keys and secrets
+config_local.py
+secrets.py
+api_keys.txt
+
+# Python
 __pycache__/
-*.pyc
-*.pyo
-*.pyd
+*.py[cod]
+*$py.class
+*.so
 .Python
 build/
 develop-eggs/
@@ -19,6 +26,59 @@ lib64/
 parts/
 sdist/
 var/
+wheels/
+share/python-wheels/
 *.egg-info/
 .installed.cfg
-*.egg 
+*.egg
+MANIFEST
+
+# Virtual environments
+.venv
+venv/
+ENV/
+env/
+.env/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Project specific
+captured_photos/*.jpg
+captured_photos/*.png
+captured_photos/*.jpeg
+user_photos/*.jpg
+user_photos/*.png
+user_photos/*.jpeg
+logs/*.log
+temp/*
+*.log
+
+# Keep directory structure but ignore content
+!captured_photos/.gitkeep
+!user_photos/.gitkeep
+!logs/.gitkeep
+!temp/.gitkeep
+
+# Backup files
+*.bak
+*.backup
+*.old
+
+# Large model files
+*.pkl
+*.model
+*.weights

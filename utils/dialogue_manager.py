@@ -4,7 +4,7 @@ import time
 from typing import Dict, List, Tuple, Optional
 
 class DialogueManager:
-    def __init__(self, api_key: "sk-crrrxsgwputbfxhvilcgzafqyrkzevfmcmocyupkbpcivnrh", base_url: str = "https://api.siliconflow.cn"):
+    def __init__(self, api_key: str, base_url: str = "https://api.siliconflow.cn"):
         self.api_key = api_key
         self.base_url = base_url
         self.conversation_history: List[Dict] = []
